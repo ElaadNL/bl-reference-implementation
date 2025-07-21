@@ -76,7 +76,7 @@ def _generate_capacity_limitation_intervals(
 
 def _generate_capacity_limitation_event(
     predicted_grid_asset_loads: list[PredictedGridAssetLoad], max_capacity: float
-) -> Event:
+) -> NewEvent:
     """Generate a capacity limitation event for the given predicted grid asset load.
 
     Args:
@@ -109,7 +109,7 @@ def _generate_capacity_limitation_event(
 
 async def get_capacity_limitation_event(
     actions: PredictionActionsBase, from_date: datetime, to_date: datetime
-) -> Event | None:
+) -> NewEvent | None:
     """Retrieve OpenADR3 capacity limitation events between the given times.
 
     Args:

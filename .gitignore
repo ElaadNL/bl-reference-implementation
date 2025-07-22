@@ -153,8 +153,9 @@ test-output.xml
 # VS Code user settings
 .vscode
 
-# Azurite
+/secrets
 
+# Azurite
 node_modules
 coverage
 azurite-testdrive

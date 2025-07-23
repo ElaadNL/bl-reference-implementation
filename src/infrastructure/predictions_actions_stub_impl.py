@@ -1,4 +1,5 @@
 """Module which implements prediction actions."""
+
 import random
 
 from datetime import datetime, timedelta
@@ -6,6 +7,7 @@ from datetime import datetime, timedelta
 from src.application.generate_events import PredictionActionsBase
 
 from src.models.predicted_load import PredictedGridAssetLoad
+
 
 class PredictionActionsStub(PredictionActionsBase[None]):
     """Stub implementation of the prediction actions, generates predicted grid asset loads when called.
@@ -15,8 +17,7 @@ class PredictionActionsStub(PredictionActionsBase[None]):
     """
 
     def __init__(self) -> None:
-        """Initializes the PredictionActionsStub.
-        """
+        """Initializes the PredictionActionsStub."""
         super().__init__()
 
     def get_query_api(self) -> None:
@@ -53,4 +54,3 @@ class PredictionActionsStub(PredictionActionsBase[None]):
             current_time += step
 
         return predicted_grid_asset_loads
-    

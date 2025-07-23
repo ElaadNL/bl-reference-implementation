@@ -1,6 +1,6 @@
 # To enable ssh & remote debugging on app service change the base image to the one below
-# FROM mcr.microsoft.com/azure-functions/python:4-python3.13-appservice
-FROM mcr.microsoft.com/azure-functions/python:4-python3.13
+# FROM mcr.microsoft.com/azure-functions/python:4-python3.12-appservice
+FROM mcr.microsoft.com/azure-functions/python:4-python3.12
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true
@@ -17,7 +17,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_VIRTUALENVS_CREATE=0 \
     POETRY_CACHE_DIR=/tmp/poetry_cache
 
-RUN pip install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+    
+ENV PATH="$HOME/.local/bin:$PATH"
 
 COPY poetry.lock pyproject.toml ./
 

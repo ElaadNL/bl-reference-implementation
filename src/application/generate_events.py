@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from openadr3_client.models.event.event import Event, NewEvent
+from openadr3_client.models.event.event import NewEvent
 from openadr3_client.models.common.interval import Interval
 from openadr3_client.models.common.interval_period import IntervalPeriod
 from openadr3_client.models.event.event_payload import (
@@ -68,7 +68,8 @@ def _generate_capacity_limitation_intervals(
             EventPayload(
                 type=EventPayloadType.IMPORT_CAPACITY_LIMIT,
                 values=(
-                    predicted_grid_asset_loads.flex_capacity_required(max_capacity) or 0,
+                    predicted_grid_asset_loads.flex_capacity_required(max_capacity)
+                    or 0,
                 ),
             ),
         ),
@@ -91,7 +92,7 @@ def _generate_capacity_limitation_event(
         _generate_capacity_limitation_intervals(
             interval_id=interval_id,
             predicted_grid_asset_loads=predicted_grid_asset_load,
-            max_capacity=max_capacity
+            max_capacity=max_capacity,
         )
         for interval_id, predicted_grid_asset_load in enumerate(
             predicted_grid_asset_loads
@@ -108,9 +109,9 @@ def _generate_capacity_limitation_event(
         ),
         intervals=tuple(intervals),
         targets=(
-            Target(type="VEN_NAME", values=("DITM-VEN",)), 
-            Target(type="POWER_SERVICE_LOCATION", values=("EAN123456789012345",)), 
-        )
+            Target(type="VEN_NAME", values=("DITM-VEN",)),
+            Target(type="POWER_SERVICE_LOCATION", values=("EAN123456789012345",)),
+        ),
     )
 
 

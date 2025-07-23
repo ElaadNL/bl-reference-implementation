@@ -4,14 +4,13 @@ from openadr3_client.bl._client import BusinessLogicClient
 from openadr3_client.models.event.event import NewEvent
 
 from src.application.generate_events import get_capacity_limitation_event
-from src.infrastructure.influxdb._client import create_db_client
-from src.infrastructure.prediction_actions_impl import PredictionActionsInfluxDB
 from src.infrastructure.predictions_actions_stub_impl import PredictionActionsStub
 from src.logger import logger
 from src.config import VTN_BASE_URL
 import azure.functions as func
 
 bp = func.Blueprint()
+
 
 def initialize_bl_client() -> BusinessLogicClient:
     """Initialize the BL client with the base URL of the VTN.
@@ -23,6 +22,7 @@ def initialize_bl_client() -> BusinessLogicClient:
         vtn_base_url=VTN_BASE_URL
     )
     return bl_client
+
 
 async def generate_events() -> NewEvent | None:
     """Generate events for tomorrow to be published to the VTN.
@@ -36,20 +36,27 @@ async def generate_events() -> NewEvent | None:
     )
     # End time is 00:00 the day after tomorrow.
     end_time = start_time + timedelta(days=1)
-    
+
     # actions = PredictionActionsInfluxDB(client=create_db_client())
     actions = PredictionActionsStub()
-    
-    return await get_capacity_limitation_event(actions, from_date=start_time, to_date=end_time)
 
-@bp.schedule(schedule="* 50 23 * * *", arg_name="myTimer", run_on_startup=True, use_monitor=False) 
+    return await get_capacity_limitation_event(
+        actions, from_date=start_time, to_date=end_time
+    )
+
+
+@bp.schedule(
+    schedule="* 50 23 * * *", arg_name="myTimer", run_on_startup=True, use_monitor=False
+)
 async def timer_trigger(myTimer: func.TimerRequest) -> None:
     try:
         logger.info("Triggering BL function at %s", datetime.now(tz=timezone.utc))
         event = await generate_events()
 
         if not event:
-            logger.warning("No capacity limitation event could be constructed, skipping...")
+            logger.warning(
+                "No capacity limitation event could be constructed, skipping..."
+            )
             return None
 
         bl_client = initialize_bl_client()
@@ -58,4 +65,4 @@ async def timer_trigger(myTimer: func.TimerRequest) -> None:
     except Exception as exc:
         logger.warning("Exception occurred during function execution", exc_info=exc)
 
-    logger.info('Python timer trigger function executed.')
+    logger.info("Python timer trigger function executed.")

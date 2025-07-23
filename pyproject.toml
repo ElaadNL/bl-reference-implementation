@@ -30,7 +30,7 @@ package-mode = false
 pytest-cov = "^6.2.1"
 
 [[tool.mypy.overrides]]
-module = ["decouple"]
+module = ["decouple", "openadr3_client_gac_compliance"]
 ignore_missing_imports = true
 
 [tool.poetry.requires-plugins]

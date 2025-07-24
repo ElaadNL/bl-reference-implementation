@@ -1,4 +1,3 @@
-from pathlib import Path
 from decouple import config
 
 # The base URL of the VTN.

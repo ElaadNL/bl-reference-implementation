@@ -12,6 +12,7 @@ from src.config import VTN_BASE_URL
 
 bp = func.Blueprint()
 
+
 def _initialize_bl_client() -> BusinessLogicClient:
     """Initialize the BL client with the base URL of the VTN.
 

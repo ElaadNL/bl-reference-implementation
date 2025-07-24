@@ -16,11 +16,5 @@ INFLUXDB_ORG = config("INFLUXDB_ORG")
 INFLUXDB_BUCKET = config("INFLUXDB_BUCKET")
 
 # INFLUXDB parameters (secrets)
-INFLUXDB_TOKEN_FILE = config("INFLUXDB_TOKEN_FILE")
-INFLUXDB_URL_FILE = config("INFLUXDB_URL_FILE")
-
-with Path.open(INFLUXDB_TOKEN_FILE) as f:
-    INFLUXDB_TOKEN = f.read().strip()
-
-with Path.open(INFLUXDB_URL_FILE) as f:
-    INFLUXDB_URL = f.read().strip()
+INFLUXDB_TOKEN = config("INFLUXDB_TOKEN")
+INFLUXDB_URL = config("INFLUXDB_URL")

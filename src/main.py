@@ -61,8 +61,12 @@ async def timer_trigger(myTimer: func.TimerRequest) -> None:
             return None
 
         bl_client = _initialize_bl_client()
-        created_event = bl_client.events.create_event(new_event=event)
-        logger.info("Created event with id: %s in VTN", created_event.id)
+        
+        try:
+            created_event = bl_client.events.create_event(new_event=event)
+            logger.info("Created event with id: %s in VTN", created_event.id)
+        except Exception as exc:
+            logger.warning("Exception occurred during event creation in the VTN", exc_info=exc)
     except Exception as exc:
         logger.warning("Exception occurred during function execution", exc_info=exc)
 

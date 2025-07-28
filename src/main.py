@@ -12,6 +12,7 @@ from src.config import VTN_BASE_URL
 
 bp = func.Blueprint()
 
+
 def _initialize_bl_client() -> BusinessLogicClient:
     """Initialize the BL client with the base URL of the VTN.
 
@@ -22,6 +23,7 @@ def _initialize_bl_client() -> BusinessLogicClient:
         vtn_base_url=VTN_BASE_URL
     )
     return bl_client
+
 
 async def _generate_events() -> NewEvent | None:
     """Generate events for tomorrow to be published to the VTN.
@@ -43,6 +45,7 @@ async def _generate_events() -> NewEvent | None:
         actions, from_date=start_time, to_date=end_time
     )
 
+
 @bp.schedule(
     schedule="* 50 21 * * *",
     arg_name="myTimer",
@@ -61,12 +64,14 @@ async def timer_trigger(myTimer: func.TimerRequest) -> None:
             return None
 
         bl_client = _initialize_bl_client()
-        
+
         try:
             created_event = bl_client.events.create_event(new_event=event)
             logger.info("Created event with id: %s in VTN", created_event.id)
         except Exception as exc:
-            logger.warning("Exception occurred during event creation in the VTN", exc_info=exc)
+            logger.warning(
+                "Exception occurred during event creation in the VTN", exc_info=exc
+            )
     except Exception as exc:
         logger.warning("Exception occurred during function execution", exc_info=exc)
 

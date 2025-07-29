@@ -36,9 +36,7 @@ async def _generate_events() -> NewEvent | None:
     current_time_ams = datetime.now(ZoneInfo("Europe/Amsterdam"))
 
     # Start time is 12:00 today.
-    start_time = current_time_ams.replace(
-        hour=12, minute=0, second=0, microsecond=0
-    )
+    start_time = current_time_ams.replace(hour=12, minute=0, second=0, microsecond=0)
     # End time is 12:00 48 hours in the future
     end_time = start_time + timedelta(days=2)
 
@@ -48,6 +46,7 @@ async def _generate_events() -> NewEvent | None:
     return await get_capacity_limitation_event(
         actions, from_date=start_time, to_date=end_time
     )
+
 
 async def _clean_up_old_events(bl_client: BusinessLogicClient) -> None:
     """Clean up old events from the VTN targeting the VEN of this BL that are going to be replaced by the new events."""

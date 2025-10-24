@@ -92,7 +92,7 @@ async def main() -> None:
 
 
 @bp.schedule(
-    schedule="0 50 5 * * *",
+    schedule="0 50 7 * * *",
     arg_name="myTimer",
     run_on_startup=False,
     use_monitor=False,

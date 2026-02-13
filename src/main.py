@@ -3,14 +3,15 @@ import azure.functions as func
 from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 from openadr3_client.bl.http_factory import BusinessLogicHttpClientFactory
-from openadr3_client.bl._client import BusinessLogicClient
-from openadr3_client.models.event.event import NewEvent
-from openadr3_client._vtn.interfaces.filters import TargetFilter
+from openadr3_client.oadr301._bl.client import BusinessLogicClient
+from openadr3_client.oadr301.models.event.event import NewEvent
+from openadr3_client.oadr301._vtn.interfaces.filters import TargetFilter
 
 from src.application.generate_events import get_capacity_limitation_event
 from src.infrastructure.predictions_actions_stub_impl import PredictionActionsStub
 from src.logger import logger
 from src.config import PROGRAM_ID, VEN_NAME, VTN_BASE_URL
+from openadr3_client.version import OADRVersion
 
 bp = func.Blueprint()
 
@@ -21,8 +22,13 @@ def _initialize_bl_client() -> BusinessLogicClient:
     Returns:
         BusinessLogicClient: The BL client.
     """
-    bl_client = BusinessLogicHttpClientFactory.create_http_bl_client(
-        vtn_base_url=VTN_BASE_URL
+    bl_client: BusinessLogicClient = BusinessLogicHttpClientFactory.create_http_bl_client(
+        vtn_base_url="https://flexnl-vtn-app-service.azurewebsites.net/", # Should be correct
+        client_id=..., # your oauth client ID
+        client_secret=..., # your oauth client token
+        token_url="https://login.microsoftonline.com/b8a70a31-934f-4ff6-8e7a-2b646b7f480c/oauth2/v2.0/token", # oauth token URL, should be correct already.
+        scopes=["4dd9217e-a334-4de7-9b0f-c3e9123dd08a/.default"], # OAuth scope, should be correct already.
+        version=OADRVersion.V3_0_1, # Assuming OpenADR 3.0.1 for now.
     )
     return bl_client
 

@@ -1,7 +1,6 @@
 import azure.functions as func
 
 from datetime import UTC, datetime, timedelta
-from zoneinfo import ZoneInfo
 from openadr3_client.bl.http_factory import BusinessLogicHttpClientFactory
 from openadr3_client.oadr301._bl.client import BusinessLogicClient
 from openadr3_client.oadr301.models.event.event import NewEvent
@@ -25,6 +24,7 @@ PROGRAM_ID = "602a77d6-c1e5-4c69-baec-3130b3bdc6bc"
 VEN_NAME = "VEN_NAME_TARGETED_BY_EVENT_PRODUCED_BY_BL"
 EXAMPLE_EAN_TARGET = "123456789012345678"
 
+
 def _initialize_bl_client() -> BusinessLogicClient:
     """Initialize the BL client with the base URL of the VTN.
 
@@ -32,19 +32,20 @@ def _initialize_bl_client() -> BusinessLogicClient:
         BusinessLogicClient: The BL client.
     """
     bl_client: BusinessLogicClient = BusinessLogicHttpClientFactory.create_http_bl_client(
-        vtn_base_url="https://flexnl-vtn-app-service.azurewebsites.net/", # Should be correct
-        client_id=..., # your oauth client ID
-        client_secret=..., # your oauth client token
-        token_url="https://login.microsoftonline.com/b8a70a31-934f-4ff6-8e7a-2b646b7f480c/oauth2/v2.0/token", # oauth token URL, should be correct already.
-        scopes=["4dd9217e-a334-4de7-9b0f-c3e9123dd08a/.default"], # OAuth scope, should be correct already.
-        version=OADRVersion.V3_0_1, # Assuming OpenADR 3.0.1 for now.
+        vtn_base_url="https://flexnl-vtn-app-service.azurewebsites.net/",  # Should be correct
+        client_id=...,  # your oauth client ID
+        client_secret=...,  # your oauth client token
+        token_url="https://login.microsoftonline.com/b8a70a31-934f-4ff6-8e7a-2b646b7f480c/oauth2/v2.0/token",  # oauth token URL, should be correct already.
+        scopes=[
+            "4dd9217e-a334-4de7-9b0f-c3e9123dd08a/.default"
+        ],  # OAuth scope, should be correct already.
+        version=OADRVersion.V3_0_1,  # Assuming OpenADR 3.0.1 for now.
     )
     return bl_client
 
 
 async def _generate_events() -> NewEvent | None:
-    """Generate an OpenADR event to be published by the BL.
-    """
+    """Generate an OpenADR event to be published by the BL."""
     # In this example, the event has three 15 minute chunks of different import capacity limits.
     intervals = (
         Interval(
@@ -56,7 +57,7 @@ async def _generate_events() -> NewEvent | None:
             payloads=(
                 EventPayload(
                     type=EventPayloadType.IMPORT_CAPACITY_LIMIT,
-                    values=(11.0,), # 11 kW limit for these 15 minutes.
+                    values=(11.0,),  # 11 kW limit for these 15 minutes.
                 ),
             ),
         ),
@@ -69,7 +70,7 @@ async def _generate_events() -> NewEvent | None:
             payloads=(
                 EventPayload(
                     type=EventPayloadType.IMPORT_CAPACITY_LIMIT,
-                    values=(4.0,), # 4 kW limit for these 15 minutes.
+                    values=(4.0,),  # 4 kW limit for these 15 minutes.
                 ),
             ),
         ),
@@ -82,10 +83,10 @@ async def _generate_events() -> NewEvent | None:
             payloads=(
                 EventPayload(
                     type=EventPayloadType.IMPORT_CAPACITY_LIMIT,
-                    values=(8.0,), # 8 kW limit for these 15 minutes.
+                    values=(8.0,),  # 8 kW limit for these 15 minutes.
                 ),
             ),
-        )
+        ),
     )
 
     openadr_event = NewEvent(
@@ -95,10 +96,12 @@ async def _generate_events() -> NewEvent | None:
             EventPayloadDescriptor(
                 payload_type=EventPayloadType.IMPORT_CAPACITY_LIMIT, units=Unit.KW
             ),
-        ), # Provides metadata to the VEN about what this event contains (import capacity limit in this case, in kW).
+        ),  # Provides metadata to the VEN about what this event contains (import capacity limit in this case, in kW).
         intervals=tuple(intervals),
         targets=(
-            Target(type="VEN_NAME", values=(VEN_NAME,)), # The event is targeted to a specific VEN (for example, CPO).
+            Target(
+                type="VEN_NAME", values=(VEN_NAME,)
+            ),  # The event is targeted to a specific VEN (for example, CPO).
             # The event is also targeted to a specific power service location, in this example, to a grid connection point (EAN18).
             # This is up to you to decide what you wish to target on.
             Target(type="POWER_SERVICE_LOCATION", values=(EXAMPLE_EAN_TARGET,)),
@@ -149,6 +152,7 @@ async def main() -> None:
         logger.warning("Exception occurred during function execution", exc_info=exc)
 
     logger.info("Python timer trigger function executed.")
+
 
 # In this example, we trigger it periodically in an Azure function. But this can of course be any
 # periodic scheduler you wish (asyncio job, lambda function, etc etc).
